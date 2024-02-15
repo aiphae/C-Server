@@ -13,4 +13,4 @@ s.close
 
 endtime = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 elapsedtime = endtime - starttime
-puts "Done in #{elapsedtime}"
+puts "Done in #{elapsedtime} s"
