@@ -10,12 +10,29 @@
 #include <pthread.h>
 
 #define SERVER_PORT 8000
-#define BUFFER_SIZE 16384
+#define BUFFER_SIZE 8192
+#define THREAD_NUM 8
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
 
+typedef struct node {
+    int *client_socket;
+    struct node *next;
+} node;
+
+node *head = NULL;
+node *tail = NULL;
+
+void enqueue(int *client_socket);
+int *dequeue();
+
+pthread_t threads[THREAD_NUM];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+
 void *handle_connection(void *arg);
+void *thread_function(void *arg);
 
 int main(void) {
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -34,9 +51,16 @@ int main(void) {
         exit(2);
     }
 
-    if (listen(server_socket, 10) < 0) {
+    if (listen(server_socket, 100) < 0) {
         printf("Failed to listen.\n");
         exit(3);
+    }
+
+    for (int i = 0; i < THREAD_NUM; i++) {
+        if (pthread_create(&threads[i], NULL, thread_function, NULL) != 0) {
+            printf("Failed to create a thread\n");
+            exit(7);
+        }
     }
 
     while (1) {
@@ -47,11 +71,18 @@ int main(void) {
             exit(4);
         }
 
-        pthread_t th;
         int *p_client_socket = malloc(sizeof(*p_client_socket));
+        if (p_client_socket == NULL) {
+            printf("Memory allocation failed\n");
+            exit(5);
+        }
+
         *p_client_socket = client_socket;
-        pthread_create(&th, NULL, handle_connection, (void *) p_client_socket);
-        pthread_join(th, NULL);
+        pthread_mutex_lock(&mutex);
+        enqueue(p_client_socket);
+        pthread_cond_signal(&cond);
+        pthread_mutex_unlock(&mutex);
+        // handle_connection(p_client_socket);
     }
 }
 
@@ -78,6 +109,7 @@ void *handle_connection(void *arg) {
         exit(6);
     }
 
+    memset(buffer, 0, sizeof(buffer));
     while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, file)) > 0) {
         write(client_socket, buffer, bytes_read);
     }
@@ -86,4 +118,50 @@ void *handle_connection(void *arg) {
     fclose(file);
     
     return NULL;
+}
+
+void *thread_function(void *arg) {
+    while (1) {
+        int *p_client_socket;
+        pthread_mutex_lock(&mutex);
+        if ((p_client_socket = dequeue()) == NULL) {
+            pthread_cond_wait(&cond, &mutex);
+            p_client_socket = dequeue();
+        }
+        pthread_mutex_unlock(&mutex);
+        
+        if (p_client_socket != NULL) {
+            handle_connection((void *) p_client_socket);
+        }
+    }
+}
+
+void enqueue(int *client_socket) {
+    node *new = malloc(sizeof(node));
+    new->client_socket = client_socket;
+    new->next = NULL;
+
+    if (tail == NULL) {
+        head = new;
+    }
+    else {
+        tail->next = new;
+    }
+    tail = new;
+}
+
+int *dequeue() {
+    if (head == NULL) {
+        return NULL;
+    }
+    else {
+        int *client_socket = head->client_socket;
+        node *temp = head;
+        head = head->next;
+        if (head == NULL) {
+            tail = NULL;
+        }
+        free(temp);
+        return client_socket;
+    }
 }
