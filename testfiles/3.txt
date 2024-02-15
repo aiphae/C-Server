@@ -1,0 +1,13 @@
+This is 3.txt
+
+Nulla facilisi. Proin euismod diam lacus. Etiam quis lacus sit amet justo 
+sagittis mattis nec quis ante. Phasellus varius gravida molestie. Vestibulum 
+ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; 
+Vestibulum nec nisi neque. Praesent lectus tellus, tempor vitae eros eget, 
+luctus blandit tortor. Aliquam metus lacus, convallis vitae sapien rhoncus, 
+laoreet laoreet nisl. Phasellus condimentum purus et hendrerit fringilla. 
+Aliquam ac augue eros. Ut dignissim, justo sed dignissim blandit, elit ex 
+sollicitudin massa, sit amet efficitur lorem tortor eget dolor. Nam sollicitudin 
+ipsum felis, vitae faucibus lectus aliquet ut. Proin eu suscipit dolor. Morbi 
+aliquam ligula vel maximus venenatis. Maecenas luctus mauris nec arcu efficitur 
+mattis. Duis in consequat ligula.

@@ -1,0 +1,8 @@
+This is 6.txt
+
+Maecenas feugiat ac ipsum sed malesuada. In suscipit a nunc sed semper. 
+Maecenas fermentum sem non dignissim dignissim. In ac nunc bibendum, rhoncus 
+mi vel, auctor justo. Sed vestibulum et ipsum ut consequat. Donec sollicitudin 
+purus interdum justo elementum, sit amet posuere enim consectetur. Praesent eget 
+consectetur magna. Donec eros dui, facilisis ac magna id, vehicula pulvinar velit. 
+Integer sed ipsum aliquet, faucibus ipsum non, iaculis sem.
