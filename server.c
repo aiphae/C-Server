@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <limits.h>
 #include <pthread.h>
+#include "queue.h"
 
 #define SERVER_PORT 8000
 #define BUFFER_SIZE 8192
@@ -15,17 +16,6 @@
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
-
-typedef struct node {
-    int *client_socket;
-    struct node *next;
-} node;
-
-node *head = NULL;
-node *tail = NULL;
-
-void enqueue(int *client_socket);
-int *dequeue();
 
 pthread_t threads[THREAD_NUM];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -82,7 +72,6 @@ int main(void) {
         enqueue(p_client_socket);
         pthread_cond_signal(&cond);
         pthread_mutex_unlock(&mutex);
-        // handle_connection(p_client_socket);
     }
 }
 
@@ -133,35 +122,5 @@ void *thread_function(void *arg) {
         if (p_client_socket != NULL) {
             handle_connection((void *) p_client_socket);
         }
-    }
-}
-
-void enqueue(int *client_socket) {
-    node *new = malloc(sizeof(node));
-    new->client_socket = client_socket;
-    new->next = NULL;
-
-    if (tail == NULL) {
-        head = new;
-    }
-    else {
-        tail->next = new;
-    }
-    tail = new;
-}
-
-int *dequeue() {
-    if (head == NULL) {
-        return NULL;
-    }
-    else {
-        int *client_socket = head->client_socket;
-        node *temp = head;
-        head = head->next;
-        if (head == NULL) {
-            tail = NULL;
-        }
-        free(temp);
-        return client_socket;
     }
 }
