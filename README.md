@@ -16,4 +16,4 @@ Second terminal: `./clients.bash`
 
 ### Notes:
 
-Remote the '#' symbol at `#puts line` line in `client.rb` to actually output text inside files.
+Remove the '#' symbol at `#puts line` line in `client.rb` to actually output text inside files.
