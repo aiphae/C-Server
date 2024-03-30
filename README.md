@@ -4,7 +4,7 @@
 
 `queue.c` : implements a queue data structure with enqueue() and dequeue() functions.
 
-`client.rb` : the Ruby script represents a client application that connects to the server and requests a random .txt file.
+`client.c` : represents a client application that connects to the server and requests a random .txt file.
 
 `clients.bash` : generates a bunch of client connections.
 
@@ -13,7 +13,3 @@
 First terminal: `./server`
 
 Second terminal: `./clients.bash`
-
-### Notes:
-
-Remove the comment symbol at `#puts line` line in `client.rb` to actually output text inside files.
